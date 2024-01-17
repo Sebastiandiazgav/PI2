@@ -55,55 +55,54 @@ Antes de cargar los datos, se verificó que los datos fueran del tipo adecuado a
 
 Una vez que los datos se cargaron correctamente, se crearon las medidas y los gráficos necesarios para realizar el análisis.
 
-medidas creadas
+*** Medidas Creadas
 
-%hombres = DIVIDE([Cantidad hombres],[Número de acusados únicos por categoría]) * 100
+- **% Hombres:** `DIVIDE([Cantidad Hombres], [Número de Acusados Únicos por Categoría]) * 100`
 
-%mujeres = DIVIDE([ccantidad mujeres],[Número de acusados únicos por categoría]) * 100
+- **% Mujeres:** `DIVIDE([Cantidad Mujeres], [Número de Acusados Únicos por Categoría]) * 100`
 
-Actual = DIVIDE(SUM(homicidio_df[N_VICTIMAS]), [Poblacion]) * 100000
+- **Actual:** `DIVIDE(SUM(homicidio_df[N_VICTIMAS]), [Poblacion]) * 100000`
 
+- **Anterior:** `DIVIDE(CALCULATE(SUM(homicidio_df[N_VICTIMAS]), DATEADD(homicidio_df[FECHA_x], -6, MONTH)), [Poblacion]) * 100000`
 
-Anterior = DIVIDE(CALCULATE(SUM(homicidio_df[N_VICTIMAS]), DATEADD(homicidio_df[FECHA_x], -6, MONTH)), [Poblacion]) * 100000
+- **Cantidad Hombres:** `CALCULATE([Número de Acusados Únicos por Categoría], homicidio_df[SEXO] = "MASCULINO")`
 
-Cantidad hombres = CALCULATE([Número de acusados únicos por categoría],homicidio_df[SEXO] = "MASCULINO")
+- **Cantidad Mujeres:** `CALCULATE([Número de Acusados Únicos por Categoría], homicidio_df[SEXO] = "FEMENINO")`
 
+- **Moto Actual:** `SUMX(FILTER(homicidio_df, YEAR(homicidio_df[AAAA_x]) = YEAR(TODAY())), homicidio_df[VictimasEnMoto])`
 
-ccantidad mujeres = CALCULATE(homicidio_df[Número de acusados únicos por categoría],homicidio_df[SEXO] = "FEMENINO")
-
-MotoActual = SUMX(FILTER(homicidio_df, YEAR(homicidio_df[AAAA_x]) = YEAR(TODAY())), homicidio_df[VictimasEnMoto]
-)
-
-MotoAnterior = 
-CALCULATE(
-    SUMX(
-        FILTER(homicidio_df, homicidio_df[VICTIMA_x] = "MOTO"),
-        DATEVALUE(homicidio_df[FECHA_x])
-    ),
-    SAMEPERIODLASTYEAR(homicidio_df[FECHA_x])
-)
-
-
-Número de acusados únicos por categoría = COUNTROWS(FILTER(homicidio_df, NOT(ISBLANK(homicidio_df[ACUSADO]))))
-
-
-Número de víctimas fatales = SUM(homicidio_df[N_VICTIMAS])
-
-
-Poblacion = 3120021 * (1 - 0.015)
+- **Moto Anterior:**
+  ```md
+  CALCULATE(
+      SUMX(
+          FILTER(homicidio_df, homicidio_df[VICTIMA_x] = "MOTO"),
+          DATEVALUE(homicidio_df[FECHA_x])
+      ),
+      SAMEPERIODLASTYEAR(homicidio_df[FECHA_x])
+  )
 
 
 
-Reduccion10Porciento = DIVIDE([Anterior] - [Actual], [Anterior])
+- Número de acusados únicos por categoría = COUNTROWS(FILTER(homicidio_df, NOT(ISBLANK(homicidio_df[ACUSADO]))))
 
 
-Reduccion7Porciento = ([MotoAnterior] - [MotoActual]) / [MotoAnterior] * 100
+- Número de víctimas fatales = SUM(homicidio_df[N_VICTIMAS])
 
 
-Tasa de homicidios en siniestros viales = (homicidio_df[Número de víctimas fatales] / [Poblacion]) * 100.000
+- Poblacion = 3120021 * (1 - 0.015)
 
 
-TasaSiniestrosVialesAnterior = 
+
+- Reduccion10Porciento = DIVIDE([Anterior] - [Actual], [Anterior])
+
+
+- Reduccion7Porciento = ([MotoAnterior] - [MotoActual]) / [MotoAnterior] * 100
+
+
+- Tasa de homicidios en siniestros viales = (homicidio_df[Número de víctimas fatales] / [Poblacion]) * 100.000
+
+
+- TasaSiniestrosVialesAnterior = 
 CALCULATE(
     SUM(homicidio_df[N_VICTIMAS]),
     DATEADD(homicidio_df[FECHA_x], -6, MONTH)
@@ -111,7 +110,7 @@ CALCULATE(
 (3120021 * (1 - 0.015)) * 100000
                                    
 
-VictimasEnMoto = CALCULATE(SUM(homicidio_df[N_VICTIMAS]), homicidio_df[VICTIMA_x] = "MOTO")
+- VictimasEnMoto = CALCULATE(SUM(homicidio_df[N_VICTIMAS]), homicidio_df[VICTIMA_x] = "MOTO")
 
 
 se crean las columnas
