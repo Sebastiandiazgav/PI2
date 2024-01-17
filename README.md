@@ -1,7 +1,7 @@
 
 
 
-Rol a Desarrollar:
+** Rol a Desarrollar:
 
 El rol asignado implica liderar y ejecutar un proyecto integral de análisis de datos para el Observatorio de Movilidad y Seguridad Vial (OMSV). El OMSV, en su función de recopilación y análisis de información, se basa principalmente en datos policiales, conforme a los estándares internacionales. Las estadísticas elaboradas se derivan de los sumarios proporcionados por la Policía de la Ciudad.
 
