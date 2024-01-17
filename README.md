@@ -276,7 +276,7 @@ IF(
 
 Objetivo:
 
-Disminuir la cantidad de víctimas fatales en siniestros viales en las comunas 1, 2, 3 y 4 de la Ciudad Autónoma de Buenos Aires.
+Disminuir la cantidad de víctimas fatales en siniestros viales en las comunas 1, 4, 8, 9 y 15 de la Ciudad Autónoma de Buenos Aires.
 
 
 Población objetivo:
