@@ -19,27 +19,27 @@ A continuación, se llevó a cabo un proceso de ETL (Extract, Transform, Load) p
 Posteriormente, se realizó una operación de fusión (merge) entre los dos conjuntos de datos utilizando las columnas relacionadas 'ID' y 'ID_hechos', generando un nuevo DataFrame denominado "df_combinado".
 
 Se llevaron a cabo las siguientes operaciones de limpieza en el DataFrame resultante:
-- Eliminación de las columnas: 'HORA', 'Calle', 'Altura', 'Cruce', 'XY (CABA)', 'Dirección Normalizada', 'ID_hecho', 'FECHA_y', 'AAAA_y', 'MM_y', 'DD_y', 'VICTIMA_y', 'FECHA_FALLECIMIENTO'.
-- Cambio de tipos de datos para las columnas: 'N_VICTIMAS' a tipo 'int', 'FECHA_x' a tipo 'datatime', 'AAAA_x', 'MM_x', DD_x, 'HH', 'COMUNA', 'EDAD' a tipo 'int'.
-- Conversión de las columnas 'pos x' y 'pos y' a tipo 'float'.
+- Eliminación de las columnas: `'HORA', 'Calle', 'Altura', 'Cruce', 'XY (CABA)', 'Dirección Normalizada', 'ID_hecho', 'FECHA_y', 'AAAA_y', 'MM_y', 'DD_y', 'VICTIMA_y', 'FECHA_FALLECIMIENTO'.`
+- Cambio de tipos de datos para las columnas:` 'N_VICTIMAS' a tipo 'int', 'FECHA_x' a tipo 'datatime', 'AAAA_x', 'MM_x', DD_x, 'HH', 'COMUNA', 'EDAD' a tipo 'int'.`
+- Conversión de las columnas `'pos x' y 'pos y' a tipo 'float'.`
 
-Se realizaron validaciones para detectar valores nulos, eliminando registros que contenían <NA>, 'MOTO-SD', 'SD-SD', 'AUTO-SD', 'PEATON-SD', 'SD-CARGAS', 'SD-AUTO', 'SD-MOTO', 'PASAJEROS-SD', 'SD', y 'nan'.
+Se realizaron validaciones para detectar valores nulos, eliminando registros que contenían `<NA>, 'MOTO-SD', 'SD-SD', 'AUTO-SD', 'PEATON-SD', 'SD-CARGAS', 'SD-AUTO', 'SD-MOTO', 'PASAJEROS-SD', 'SD', y 'nan'.`
 
-Finalmente, con los datos limpios y preparados, se exportó el nuevo DataFrame a un archivo CSV llamado "homicidio_df.csv" para su posterior uso en el análisis exploratorio.
+Finalmente, con los datos limpios y preparados, se exportó el nuevo DataFrame a un archivo CSV llamado `"homicidio_df.csv" `para su posterior uso en el análisis exploratorio.
 
 
 
 
 ## EDA (Exploratory Data Analysis)
 
-En el proceso de análisis exploratorio de datos, se ha empleado la librería Pandas para cargar el nuevo DataFrame desde el archivo 'homicidios_df.csv'. Además, se ha  integrado la librería 'ydata_profiling' para realizar un análisis detallado de la base  base de datos en cuestion. 
+En el proceso de análisis exploratorio de datos, se ha empleado la librería Pandas para cargar el nuevo DataFrame desde el archivo 'homicidios_df.csv'. Además, se ha  integrado la librería `'ydata_profiling'` para realizar un análisis detallado de la base  base de datos en cuestion. 
 
-Adicionalmente, con el objetivo de enriquecer el  análisis exploratorio de datos, se incorporado la librería 'dtale'. Se Invoca esta librería para proporcionarnos información adicional sobre los datos, puede acceder al documento en este apartado [EDA](https://drive.google.com/file/d/1jChuQuY1Ee_7ykh52j-mQUoChNRkPzdA/view?usp=sharing)
-
-
+Adicionalmente, con el objetivo de enriquecer el  análisis exploratorio de datos, se incorporado la librería `'dtale'.` Se Invoca esta librería para proporcionarnos información adicional sobre los datos, puede acceder al documento en este apartado [EDA](https://drive.google.com/file/d/1jChuQuY1Ee_7ykh52j-mQUoChNRkPzdA/view?usp=sharing)
 
 
-Si eres un desarrollador y deseas visualizar e interactuar con los datos, te recomendamos realizar un fork de este repositorio en GitHub. Posteriormente, clónalo y desde la terminal podrás explorar la información utilizando diversos notebooks. También hemos incluido un archivo 'requirements.txt' para que descargues las librerías necesarias para la visualización. de igual forma se deja este link que permite acceder directo a la carpeta de notbooks
+
+
+Si eres un desarrollador y deseas visualizar e interactuar con los datos, te recomendamos realizar un fork de este repositorio en GitHub. Posteriormente, clónalo y desde la terminal podrás explorar la información utilizando diversos notebooks. También hemos incluido un archivo `'requirements.txt'` para que descargues las librerías necesarias para la visualización. de igual forma se deja este link que permite acceder directo a la carpeta de notbooks
 
 En el eda se evidencia claramente que no hay valores faltantes, nulos, se evidencia la cantidad de datos a trabajar se muestran graficas con los datos relevantes para el analisis que se va a realizar se muestran los años, los dias, las horas con mas siniestros, los generos involucrados, tipos de calles con mas accidentalidad, las comunas con mayores victimas, el tipo de victima y acusado, la edad, la concentracion  de personas por edad año y por ultimo un glosario para tener claridad de los datos que se mencionan 
 
@@ -61,56 +61,79 @@ Una vez que los datos se cargaron correctamente, se crearon las medidas y los gr
 
 - **% Mujeres:** `DIVIDE([Cantidad Mujeres], [Número de Acusados Únicos por Categoría]) * 100`
 
-- **Actual:** `DIVIDE(SUM(homicidio_df[N_VICTIMAS]), [Poblacion]) * 100000`
+- Accidentes_Mortales_Actuales = 
+CALCULATE(
+   COUNTAX(FILTER('homicidio_df', 'homicidio_df'[VICTIMA_X] = "MOTO"), 'homicidio_df'[N_VICTIMAS]),
+   'homicidio_df'[FECHA_X] >= EDATE(MAX('homicidio_df'[FECHA_X]), -12) &&
+   'homicidio_df'[FECHA_X] <= MAX('homicidio_df'[FECHA_X])
+)
 
-- **Anterior:** `DIVIDE(CALCULATE(SUM(homicidio_df[N_VICTIMAS]), DATEADD(homicidio_df[FECHA_x], -6, MONTH)), [Poblacion]) * 100000`
+- Accidentes_Mortales_Anteriores = 
+CALCULATE(
+   COUNTAX(FILTER('homicidio_df', 'homicidio_df'[VICTIMA_X] = "MOTO"), 'homicidio_df'[N_VICTIMAS]),
+   'homicidio_df'[FECHA_X] >= EDATE(MAX('homicidio_df'[FECHA_X]), -24) &&
+   'homicidio_df'[FECHA_X] <= EDATE(MAX('homicidio_df'[FECHA_X]), -12)
+)
 
 - **Cantidad Hombres:** `CALCULATE([Número de Acusados Únicos por Categoría], homicidio_df[SEXO] = "MASCULINO")`
 
 - **Cantidad Mujeres:** `CALCULATE([Número de Acusados Únicos por Categoría], homicidio_df[SEXO] = "FEMENINO")`
 
-- **Moto Actual:** `SUMX(FILTER(homicidio_df, YEAR(homicidio_df[AAAA_x]) = YEAR(TODAY())), homicidio_df[VictimasEnMoto])`
-
-- **Moto Anterior:**
-  ```md
-  CALCULATE(
-      SUMX(
-          FILTER(homicidio_df, homicidio_df[VICTIMA_x] = "MOTO"),
-          DATEVALUE(homicidio_df[FECHA_x])
-      ),
-      SAMEPERIODLASTYEAR(homicidio_df[FECHA_x])
-  )
-
-
-
-- Número de acusados únicos por categoría = COUNTROWS(FILTER(homicidio_df, NOT(ISBLANK(homicidio_df[ACUSADO]))))
-
-
-- Número de víctimas fatales = SUM(homicidio_df[N_VICTIMAS])
-
-
-- Poblacion = 3120021 * (1 - 0.015)
-
-
-
-- Reduccion10Porciento = DIVIDE([Anterior] - [Actual], [Anterior])
-
-
-- Reduccion7Porciento = ([MotoAnterior] - [MotoActual]) / [MotoAnterior] * 100
-
-
-- Tasa de homicidios en siniestros viales = (homicidio_df[Número de víctimas fatales] / [Poblacion]) * 100.000
-
-
-- TasaSiniestrosVialesAnterior = 
+- ** Homicidios_Siniestros_Actuales **
+```md
 CALCULATE(
-    SUM(homicidio_df[N_VICTIMAS]),
-    DATEADD(homicidio_df[FECHA_x], -6, MONTH)
-) / 
-(3120021 * (1 - 0.015)) * 100000
+   SUM('homicidio_df'[N_VICTIMAS]),
+   'homicidio_df'[FECHA_X] >= EDATE(MAX('homicidio_df'[FECHA_X]), -6) &&
+   'homicidio_df'[FECHA_X] <= MAX('homicidio_df'[FECHA_X])
+
+)
+```
+
+- Homicidios_Siniestros_Anteriores = 
+CALCULATE(
+   SUM('homicidio_df'[N_VICTIMAS]),
+   'homicidio_df'[FECHA_X] >= EDATE(MAX('homicidio_df'[FECHA_X]), -12) &&
+   'homicidio_df'[FECHA_X] <= EDATE(MAX('homicidio_df'[FECHA_X]), -6)
+)
+
+
+
+- ** Número de acusados únicos por categoría ** `COUNTROWS(FILTER(homicidio_df, NOT(ISBLANK(homicidio_df[ACUSADO]))))`
+
+
+- ** Número de víctimas fatales** ` SUM(homicidio_df[N_VICTIMAS])`
+
+
+- ** Poblacion** ` 3120021 * (1 - 0.015)`
+
+
+
+- ** Reduccion_10 **
+```md
+IF(
+   [Tasa_Homicidios_Anteriores] <> 0,
+   ([Tasa_Homicidios_Anteriores] - [Tasa_Homicidios_Actuales]) / [Tasa_Homicidios_Anteriores],
+   BLANK()
+)
+
+```
+
+- ** Reduccion_7 **
+```md
+IF(
+   [Accidentes_Mortales_Anteriores] <> 0,
+   ([Accidentes_Mortales_Anteriores] - [Accidentes_Mortales_Actuales]) / [Accidentes_Mortales_Anteriores],
+   BLANK()
+)
+
+```
+- ** Tasa_Homicidios_Actuales **  ` ([Homicidios_Siniestros_Actuales] / 3120021) * 100000 `
+
+
+- ** Tasa_Homicidios_Anteriores ** ` ([Homicidios_Siniestros_Anteriores] / 3120021) * 100000 `
                                    
 
-- VictimasEnMoto = CALCULATE(SUM(homicidio_df[N_VICTIMAS]), homicidio_df[VICTIMA_x] = "MOTO")
+- VictimasEnMoto ` CALCULATE(SUM(homicidio_df[N_VICTIMAS]), homicidio_df[VICTIMA_x] = "MOTO")`
 
 
 se crean las columnas
@@ -141,16 +164,25 @@ La imagen de porcentajes por género se ha creado utilizando Figma. La imagen mu
 Definimos a la tasa de homicidios en siniestros viales como el número de víctimas fatales en accidentes de tránsito por cada 100,000 habitantes en un área geográfica durante un período de tiempo específico. Su fórmula es: (Número de homicidios en siniestros viales / Población total) * 100,000
 
 
-a- se tiene en cuenta el numero de victimas
-b- la tasa de homicidios a lo cual se elaboro las siguiente formula
- Tasa de homicidios en siniestros viales = (homicidio_df[Número de víctimas fatales] / [Poblacion]) * 100.000
-c- se crea una medida llamada actual  
-Actual = DIVIDE(SUM(homicidio_df[N_VICTIMAS]), [Poblacion]) * 100000
-d- se crea una medida anterior
-Anterior = DIVIDE(CALCULATE(SUM(homicidio_df[N_VICTIMAS]), DATEADD(homicidio_df[FECHA_x], -6, MONTH)), [Poblacion]) * 100000
-e- generamos indicador
-Reduccion10Porciento = DIVIDE([Anterior] - [Actual], [Anterior])
+se crean las siguientes medidas 
+```md
+Tasa_Homicidios_Actuales = 
+([Homicidios_Siniestros_Actuales] / 3120021) * 100000
 
+Tasa_Homicidios_Anteriores = 
+([Homicidios_Siniestros_Anteriores] / 3120021) * 100000
+
+
+y se crea indicador 
+Reduccion_10 = 
+IF(
+   [Tasa_Homicidios_Anteriores] <> 0,
+   ([Tasa_Homicidios_Anteriores] - [Tasa_Homicidios_Actuales]) / [Tasa_Homicidios_Anteriores],
+   BLANK()
+)
+
+
+```
 
 
 
@@ -159,24 +191,35 @@ Reduccion10Porciento = DIVIDE([Anterior] - [Actual], [Anterior])
 Definimos a la cantidad de accidentes mortales de motociclistas en siniestros viales como el número absoluto de accidentes fatales en los que estuvieron involucradas víctimas que viajaban en moto en un determinado periodo temporal. Su fórmula para medir la evolución de los accidentes mortales con víctimas en moto es: (Número de accidentes mortales con víctimas en moto en el año anterior - Número de accidentes mortales con víctimas en moto en el año actual) / (Número de accidentes mortales con víctimas en moto en el año anterior) * 100
 
 
-a- en la columna que contiene las victimas en la categoria moto se suman todos los valores que sean = 'moto'
-VictimasEnMoto = CALCULATE(SUM(homicidio_df[N_VICTIMAS]), homicidio_df[VICTIMA_x] = "MOTO")
-b- se crea una medidad para que tenga en cuenta el dato actual
-MotoActual = SUMX(FILTER(homicidio_df, YEAR(homicidio_df[AAAA_x]) = YEAR(TODAY())), homicidio_df[VictimasEnMoto]
-c- se crea una medida para que tenga el dato anterir 
-MotoAnterior = 
+se crean medidas
+
+```md
+Accidentes_Mortales_Actuales = 
 CALCULATE(
-    SUMX(
-        FILTER(homicidio_df, homicidio_df[VICTIMA_x] = "MOTO"),
-        DATEVALUE(homicidio_df[FECHA_x])
-    ),
-    SAMEPERIODLASTYEAR(homicidio_df[FECHA_x])
+   COUNTAX(FILTER('homicidio_df', 'homicidio_df'[VICTIMA_X] = "MOTO"), 'homicidio_df'[N_VICTIMAS]),
+   'homicidio_df'[FECHA_X] >= EDATE(MAX('homicidio_df'[FECHA_X]), -12) &&
+   'homicidio_df'[FECHA_X] <= MAX('homicidio_df'[FECHA_X])
 )
-d- se crea el indicador 
-Reduccion7Porciento = ([MotoAnterior] - [MotoActual]) / [MotoAnterior] * 100
 
 
+Accidentes_Mortales_Anteriores = 
+CALCULATE(
+   COUNTAX(FILTER('homicidio_df', 'homicidio_df'[VICTIMA_X] = "MOTO"), 'homicidio_df'[N_VICTIMAS]),
+   'homicidio_df'[FECHA_X] >= EDATE(MAX('homicidio_df'[FECHA_X]), -24) &&
+   'homicidio_df'[FECHA_X] <= EDATE(MAX('homicidio_df'[FECHA_X]), -12)
+)
 
+
+Creamos indicador 
+
+Reduccion_7 = 
+IF(
+   [Accidentes_Mortales_Anteriores] <> 0,
+   ([Accidentes_Mortales_Anteriores] - [Accidentes_Mortales_Actuales]) / [Accidentes_Mortales_Anteriores],
+   BLANK()
+)
+
+```
 
 ## Conclusiones 
 
